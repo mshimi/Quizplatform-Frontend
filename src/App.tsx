@@ -1,17 +1,23 @@
 
 import './App.css'
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {AuthProvider} from "./context/AuthContext.tsx";
+import AppRouter from "./routes/AppRouter.tsx";
+
+
+const queryClient = new QueryClient();
+
 
 function App() {
-
-  return (
-      <div>
-          <h1 className="text-3xl font-bold underline">
-              Hello world!
-          </h1>
-      </div>
-
-
-  )
+    return (
+        <div >
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <AppRouter />
+            </AuthProvider>
+        </QueryClientProvider>
+        </div>
+    );
 }
 
 export default App
