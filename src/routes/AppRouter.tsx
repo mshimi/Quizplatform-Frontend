@@ -13,6 +13,8 @@ import NotFoundPage from '../pages/NotFoundPage';
 import {useAuth} from "../hooks/useAuth.ts";
 import MainLayout from "../components/layout/MainLayout.tsx";
 import ExploreModulesPage from "../pages/ExploreModulesPage.tsx";
+import ModuleDetailPage from "../pages/ModuleDetailPage.tsx";
+import ComponentDiagramm from "../pages/ComponenetDiagram.tsx";
 
 // Context
 
@@ -37,6 +39,7 @@ const AppRouter = () => {
                     <Route element={<PublicRoute/>}>
                         <Route path="/login" element={<LoginPage/>}/>
                         <Route path="/register" element={<RegisterPage/>}/>
+                        <Route path="/components" element={<ComponentDiagramm/>}/>
                     </Route>
 
                     {/* Geschützte Routen, die das neue MainLayout verwenden */}
@@ -44,6 +47,8 @@ const AppRouter = () => {
                         <Route element={<MainLayout/>}>
                             <Route path="/" element={<DashboardPage/>}/>
                             <Route path="/explore-modules" element={<ExploreModulesPage/>}/>
+                            <Route path="/modules/:moduleId" element={<ModuleDetailPage />} />
+
                             {/* Fügen Sie hier weitere geschützte Routen hinzu */}
                         </Route>
                     </Route>

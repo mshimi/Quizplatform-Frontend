@@ -3,6 +3,7 @@ import UsersIcon from "../../common/icons/UsersIcon.tsx";
 import StarIcon from "../../common/icons/StarIcon.tsx";
 import type {ModuleListItem} from "../../types";
 import SpinnerIcon from "../../common/icons/SpinnerIcon.tsx";
+import {Link} from "react-router-dom";
 
 interface ModuleCardProps {
     module: ModuleListItem;
@@ -66,9 +67,12 @@ const ModuleCard = ({ module, onToggleFollow, isToggling }: ModuleCardProps) => 
                     <button className="flex-1 text-center bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 transition-transform transform hover:scale-105">
                         Quiz starten
                     </button>
-                    <button className="flex-1 text-center bg-white text-indigo-600 font-semibold py-3 px-4 rounded-lg border-2 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 transition-colors">
+                    <Link
+                        to={`/modules/${module.id}`}
+                        className="flex-1 text-center bg-white text-indigo-600 font-semibold py-3 px-4 rounded-lg border-2 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 transition-colors"
+                    >
                         Mehr Details
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>

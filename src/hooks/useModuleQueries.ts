@@ -1,5 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getFollowedModules, toggleFollowModule, getAllModules } from '../service/moduleService';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {
+    getAllModules,
+    getFollowedModules,
+    getModuleDetails,
+    type ModuleQueryParams,
+    toggleFollowModule
+} from '../service/moduleService';
 
 /**
  * Custom Hook zum Abrufen der vom Benutzer gefolgten Module.
@@ -17,7 +23,7 @@ interface FollowedModulesOptions {
  */
 export const useFollowedModules = (options: FollowedModulesOptions = {}) => {
     // Setzt Standardwerte, falls keine Optionen übergeben werden.
-    const { page = 0, size = 3 } = options;
+    const {page = 0, size = 3} = options;
 
     return useQuery({
         // Der queryKey enthält nun die Paginierung, um eindeutige Caches zu gewährleisten.
@@ -26,15 +32,12 @@ export const useFollowedModules = (options: FollowedModulesOptions = {}) => {
     });
 };
 
-/**
- * Custom Hook zum Abrufen aller Module (paginiert).
- * @param page Die Seitenzahl, die abgerufen werden soll.
- */
-export const useAllModules = (page: number) => {
+export const useModules = (params: ModuleQueryParams) => {
     return useQuery({
-        queryKey: ['modules', page],
-        queryFn: () => getAllModules(page, 9),
-        placeholderData: (pre)=> pre, // Für eine flüssigere Paginierung
+        // The query key includes all params to ensure data is refetched when they change
+        queryKey: ['modules', params],
+        queryFn: () => getAllModules(params),
+        placeholderData: (prev) => prev, // For a smoother pagination experience
     });
 };
 
@@ -46,10 +49,32 @@ export const useToggleFollow = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: toggleFollowModule,
-        onSuccess: () => {
-            // Invalidiert beide relevanten Caches, um die UI konsistent zu halten
-            queryClient.invalidateQueries({ queryKey: ['followedModules'] });
-            queryClient.invalidateQueries({ queryKey: ['modules'] });
+        onSuccess: (data, variables: string, context) => {
+
+            console.log(data);
+            console.log(context);
+
+            queryClient.invalidateQueries({queryKey: ['followedModules']});
+            queryClient.invalidateQueries({queryKey: ['moduleDetails', variables]});
+            queryClient.invalidateQueries({queryKey: ['modules']});
+
         },
+    });
+};
+
+/**
+ * A hook to fetch the details of a specific module.
+ * @param moduleId - The ID of the module.
+ * @param page - The current page for the questions.
+ */
+export const useModuleDetails = (moduleId: string | undefined, page: number) => {
+    return useQuery({
+        // The query key includes the module ID and page to refetch when they change.
+        queryKey: ['moduleDetails', moduleId, page],
+        // The query function will only run if moduleId is defined.
+        queryFn: () => getModuleDetails(moduleId!, page),
+        // This ensures the query doesn't run with an undefined ID.
+        enabled: !!moduleId,
+        placeholderData: (prev) => prev,
     });
 };

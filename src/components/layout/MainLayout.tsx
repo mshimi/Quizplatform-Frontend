@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import AppBar from './AppBar';
+import Footer from "./Footer.tsx";
 
 const MainLayout = () => {
     return (
@@ -13,6 +14,7 @@ const MainLayout = () => {
                     <Outlet />
                 </div>
             </main>
+            <Footer />
         </div>
     );
 };

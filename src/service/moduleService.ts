@@ -1,19 +1,32 @@
 // service/moduleService.ts
 import api from './api';
-import type {ModuleListItem, Page} from '../types';
+import type {ModuleDetail, ModuleListItem, Page} from '../types';
 
-/**
- * Fetches a paginated list of all modules.
- * @param page - The page number to fetch.
- * @param size - The number of items per page.
- */
-export const getAllModules = async (page = 0, size = 9): Promise<Page<ModuleListItem>> => {
-    const { data } = await api.get('/modules', {
-        params: {
-            page,
-            size,
-        },
-    });
+export interface ModuleQueryParams {
+    page?: number;
+    size?: number;
+    title?: string;
+    followed?: boolean | null; // null for all, true for followed, false for not followed
+    sortBy?: 'title' | 'numberOfChoiceQuestions' | 'likeCount';
+    sortDirection?: 'asc' | 'desc';
+}
+
+export const getAllModules = async (params: ModuleQueryParams = {}): Promise<Page<ModuleListItem>> => {
+
+    if(params.sortBy === "numberOfChoiceQuestions" || params.sortBy === "likeCount") {
+        params.sortDirection = "desc";
+    }
+
+    // Set default values for pagination
+    const queryParams = {
+        pageNumber: params.page ?? 0,
+        pageSize: params.size ?? 15,
+        title: params.title,
+        isFollowed: params.followed,
+        sort: params.sortBy ? `${params.sortBy},${params.sortDirection ?? 'asc'}` : undefined,
+    };
+
+    const { data } = await api.get('/modules', { params: queryParams });
     return data;
 };
 
@@ -39,5 +52,18 @@ export const getFollowedModules = async (page = 0, size = 4): Promise<Page<Modul
             pageSize: size,
         },
     });
+
+    return data;
+};
+
+
+export const getModuleDetails = async (moduleId: string, page = 0, size = 10): Promise<ModuleDetail> => {
+    const { data } = await api.get(`/modules/${moduleId}`, {
+        params: {
+            pageNumber: page,
+            pageSize: size,
+        },
+    });
+    console.log(data);
     return data;
 };

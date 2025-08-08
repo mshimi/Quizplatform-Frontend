@@ -1,9 +1,12 @@
 import ModuleCardSkeleton from "./ModuleCardSkeleton.tsx";
-import {Link} from "react-router-dom";
 import ModuleCard from "./ModuleCard.tsx";
 import {useFollowedModules, useToggleFollow} from "../../hooks/useModuleQueries.ts";
+import OutlineLinkButton from "../../common/button/OutlineLinkButton.tsx";
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const FollowedModulesSection = () => {
+
+    const [parent] = useAutoAnimate<HTMLDivElement>();
 
     const {isLoading, isError, data} = useFollowedModules();
 
@@ -38,16 +41,14 @@ const FollowedModulesSection = () => {
                 <div className="text-center py-10 px-6 bg-blue-50 text-blue-700 rounded-lg">
                     <h3 className="font-semibold">Sie folgen noch keinen Modulen.</h3>
                     <p className="mt-2 text-sm">Entdecken Sie Module und folgen Sie ihnen, um hier zu beginnen!</p>
-                    <Link to="/explore-modules"
-                          className="mt-4 inline-block bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-indigo-700 transition-colors">
-                        Module entdecken
-                    </Link>
+                    <OutlineLinkButton link="/explore-modules" text="Module entdecken"/>
+
                 </div>
             );
         }
 
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div ref={parent} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {data.content.map(module => {
                     const isTogglingThisCard = toggleFollowMutation.isPending && toggleFollowMutation.variables === module.id;
 
@@ -65,14 +66,8 @@ const FollowedModulesSection = () => {
                     <h2 className="text-2xl font-bold text-gray-800">Meine gefolgten Module</h2>
                     <p className="text-gray-500">Ihr schneller Zugriff auf Ihre Lernmaterialien.</p>
                 </div>
-                <Link to="/explore-modules"
-                      className="hidden sm:inline-flex items-center gap-2 bg-white text-gray-700 font-semibold py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors">
-                    <span>Mehr entdecken</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
-                    </svg>
-                </Link>
+
+                <OutlineLinkButton link="/explore-modules" text="Mehr entdecken" />
             </div>
             {renderContent()}
         </section>
