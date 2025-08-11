@@ -21,3 +21,13 @@ export interface ChangeRequestCounts {
     duplicationChange: number;
     deletionRequest: number;
 }
+
+export interface AnswerRequest {
+    text: string;
+    isCorrect: boolean;
+}
+
+export interface CreateQuestionRequest {
+    questionText: string;
+    answers: AnswerRequest[];
+}

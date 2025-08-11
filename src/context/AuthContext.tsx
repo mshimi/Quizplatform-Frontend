@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as authService from '../service/authService';
 import type { AuthenticationRequest, AuthenticationResponse, RegisterRequest, User } from '../types';
 import { AuthContext } from './authContextObject';
+import { useWebSocket } from '../hooks/useWebSocket'; // <-- CORRECTED IMPORT PATH
 
 interface AuthContextType {
     user: User | null;
@@ -18,7 +19,7 @@ interface AuthContextType {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const queryClient = useQueryClient();
-    // This state determines if we should attempt to fetch the user on page load.
+    const { connect, disconnect } = useWebSocket(); // Get connect/disconnect from WebSocketContext
     const [isAuthAttempted, setIsAuthAttempted] = useState<boolean>(!!localStorage.getItem('accessToken'));
 
     // Query to fetch the current user if a token exists
@@ -34,8 +35,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (isError) {
             // If the query fails, the token is invalid, so log out
             handleLogout();
+        } else if(user){
+            connect();
         }
-    }, [isError]);
+    }, [isError, user, connect]);
 
 
     // This function is called on successful login or registration.
@@ -63,6 +66,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsAuthAttempted(false);
         // Clear the TanStack Query cache to remove all user data
         queryClient.clear();
+        disconnect(); // Disconnect WebSocket on logout
+
     };
 
     const logoutMutation = useMutation({

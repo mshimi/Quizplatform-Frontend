@@ -5,3 +5,4 @@ export * from './quiz.types';
 export * from './page_response.type.ts'
 export * from './answer.type.ts'
 export * from './question.type.ts'
+export * from './notification.type.ts'

@@ -10,6 +10,8 @@ import PaginationControls from '../common/pagination/PaginationControls';
 import StarIcon from '../common/icons/StarIcon';
 import SpinnerIcon from '../common/icons/SpinnerIcon';
 import {useState} from "react";
+import ContributeQuestionButton from "../components/module/ContributeQuestionButton.tsx";
+import {useStartQuiz} from "../hooks/useQuizMutations.ts";
 
 const ModuleDetailPage = () => {
     const { moduleId } = useParams<{ moduleId: string }>();
@@ -17,6 +19,8 @@ const ModuleDetailPage = () => {
 
     const { data: module, isLoading, isError, isFetching } = useModuleDetails(moduleId, currentPage);
     const toggleFollowMutation = useToggleFollow();
+
+    const startQuizMutation = useStartQuiz();
 
     const handleToggleFollow = async () => {
         if (moduleId) {
@@ -42,16 +46,21 @@ const ModuleDetailPage = () => {
         <div className=" min-h-screen">
             <div className="container mx-auto px-4 py-12">
                 {/* Module Header */}
-                <header className="bg-white p-8 rounded-2xl shadow-lg mb-10">
-                    <div className="flex justify-between items-start gap-6">
+                <header className="bg-white p-6 md:p-8 rounded-2xl shadow-lg mb-10">
+                    {/* Main container: Stacks vertically on mobile, row on medium screens and up */}
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+
+                        {/* Title and Description */}
                         <div className="flex-grow">
-                            <h1 className="text-4xl font-bold text-gray-900">{module.title}</h1>
-                            <p className="mt-3 text-lg text-gray-600 max-w-3xl">{module.description}</p>
+                            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{module.title}</h1>
+                            <p className="mt-2 md:mt-3 text-base md:text-lg text-gray-600 max-w-3xl">{module.description}</p>
                         </div>
+
+                        {/* Follow Button: Full width on mobile, fixed width on medium screens up */}
                         <button
                             onClick={handleToggleFollow}
                             disabled={toggleFollowMutation.isPending}
-                            className={`flex-shrink-0 flex items-center justify-center gap-2 text-sm font-semibold py-2 px-5 rounded-full transition-all duration-300 w-32 h-10 ${
+                            className={`w-full md:w-32 flex-shrink-0 flex items-center justify-center gap-2 text-sm font-semibold py-2 px-5 rounded-full transition-all duration-300 h-10 ${
                                 toggleFollowMutation.isPending
                                     ? 'bg-teal-500 cursor-not-allowed'
                                     : module.isFollowed
@@ -67,14 +76,50 @@ const ModuleDetailPage = () => {
                             )}
                         </button>
                     </div>
-                    <div className="mt-6 pt-6 border-t border-gray-200 flex items-center gap-8 text-gray-500">
-                        <div className="text-center">
-                            <div className="text-2xl font-bold text-indigo-600">{module.numberOfQuestions}</div>
-                            <div className="text-sm">Fragen</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-2xl font-bold text-indigo-600">{module.likeCount}</div>
-                            <div className="text-sm">Follower</div>
+
+                    <div className="mt-6 pt-6 border-t border-gray-200">
+                        {/* Container für Statistiken und Aktionen */}
+                        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
+
+                            {/* Statistiken */}
+                            <div className="flex justify-center  items-center gap-8 text-gray-500 flex-shrink-0">
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold text-indigo-600">{module.numberOfQuestions}</div>
+                                    <div className="text-sm">Fragen</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold text-indigo-600">{module.likeCount}</div>
+                                    <div className="text-sm">Follower</div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:w-auto lg:min-w-[550px]">
+                                <ContributeQuestionButton moduleId={module.id} />
+
+
+                                {/* Button: Alleine üben */}
+                                <button
+                                    onClick={() => startQuizMutation.mutate(module.id)} // 3. Add onClick handler
+                                    disabled={startQuizMutation.isPending} // 4. Disable button while loading
+                                    className="h-12 px-4 flex items-center justify-center gap-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:-translate-y-0.5 whitespace-nowrap"
+                                >
+                                    {startQuizMutation.isPending ? (
+                                        <SpinnerIcon /> // 5. Show spinner when loading
+                                    ) : (
+                                        <>
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                            <span>Alleine üben</span>
+                                        </>
+                                    )}
+                                </button>
+
+                                {/* Button: Gegen andere spielen */}
+                                <button className="h-12 px-4 flex items-center justify-center gap-2 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 transform hover:-translate-y-0.5 whitespace-nowrap">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 01-9.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    <span>Gegen andere spielen</span>
+                                </button>
+                            </div>
+
                         </div>
                     </div>
                 </header>
@@ -90,7 +135,10 @@ const ModuleDetailPage = () => {
                                     question={q}
                                     // Calculate the question number based on the current page
                                     index={currentPage * module.questions.size + index}
-                                />
+                                    onOpenChangeRequestModal={function (questionId: string): void {
+                                      //  console.log(questionId);
+                                        throw new Error('Function not implemented. ' + questionId);
+                                    }}                                />
                             ))}
                         </div>
                         {isFetching && (

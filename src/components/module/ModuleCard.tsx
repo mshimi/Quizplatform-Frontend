@@ -17,7 +17,7 @@ const ModuleCard = ({ module, onToggleFollow, isToggling }: ModuleCardProps) => 
     // Der Zustand der Karte wird nun direkt von den übergeordneten Props gesteuert.
     // Das macht die Komponente vorhersehbarer und einfacher mit TanStack Query zu verwalten.
     return (
-        <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out overflow-hidden flex flex-col group">
+        <div className="bg-white rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out overflow-hidden flex flex-col group">
             {/* Karten-Header */}
             <div className="p-6 border-b border-gray-200 flex justify-between items-start">
                 <h3 className="text-xl font-bold text-gray-800 leading-tight pr-4">{module.title}</h3>

@@ -64,6 +64,6 @@ export const getModuleDetails = async (moduleId: string, page = 0, size = 10): P
             pageSize: size,
         },
     });
-    console.log(data);
+   // console.log(data);
     return data;
 };

@@ -8,9 +8,9 @@ const CollectionIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="
 
 const navLinks = [
     { to: "/", text: "Dashboard", icon: <DashboardIcon /> },
-    { to: "/start-quiz", text: "Start Quiz", icon: <PlayIcon /> },
+
     { to: "/explore-modules", text: "Explore Modules", icon: <CollectionIcon /> },
-    // Fügen Sie hier weitere Links hinzu...
+    { to: "/quizes", text: "Quizes", icon: <PlayIcon /> },
 ];
 
 const AppBar = () => {

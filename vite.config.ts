@@ -12,6 +12,8 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:8081'
     }
-  }
-
+  },
+  define: {
+    global: 'window',
+  },
 })

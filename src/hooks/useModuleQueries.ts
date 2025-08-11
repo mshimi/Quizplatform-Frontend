@@ -49,10 +49,10 @@ export const useToggleFollow = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: toggleFollowModule,
-        onSuccess: (data, variables: string, context) => {
+        onSuccess: (data , variables: string) => {
 
-            console.log(data);
-            console.log(context);
+          //  console.log(data);
+          //  console.log(context);
 
             queryClient.invalidateQueries({queryKey: ['followedModules']});
             queryClient.invalidateQueries({queryKey: ['moduleDetails', variables]});
