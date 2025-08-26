@@ -5,7 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 
 const LoginPage = () => {
     const [credentials, setCredentials] = useState<AuthenticationRequest>({ email: '', password: '' });
-    const { login, isAuthenticated } = useAuth();
+    const { login, isAuthenticated, authError } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,6 +40,12 @@ const LoginPage = () => {
             </div>
             <div className="max-w-md w-full mx-auto mt-8 bg-white p-8 border border-gray-200 rounded-2xl shadow-lg">
                 <form onSubmit={handleSubmit} className="space-y-6">
+                    {authError && (
+                        <div className="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md">
+                            <p className="font-bold">Anmeldung fehlgeschlagen</p>
+                            <p>{authError}</p>
+                        </div>
+                    )}
                     <div>
                         <label htmlFor="email" className="text-sm font-bold text-gray-600 block">
                             E-Mail-Adresse

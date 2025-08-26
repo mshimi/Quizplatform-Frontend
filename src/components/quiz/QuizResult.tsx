@@ -14,12 +14,12 @@ const QuizResult = ({ quizData }: QuizResultProps) => {
         <div className="space-y-8">
             {/* --- Results Summary Card --- */}
             <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
-                <h1 className="text-3xl font-bold text-slate-800">Quiz Abgeschlossen!</h1>
+                <h1 className="text-2xl font-bold text-slate-800">Quiz Abgeschlossen!</h1>
                 <p className="mt-2 text-slate-500">Hier ist Ihre Auswertung für das Modul:</p>
                 <p className="font-semibold text-indigo-600">{quizData.module.title}</p>
 
                 <div className="my-8">
-                    <div className={`text-6xl font-bold ${scoreColor}`}>{quizData.scorePercentage}%</div>
+                    <div className={`text-4xl font-bold ${scoreColor}`}>{quizData.scorePercentage}%</div>
                     <div className="w-full bg-slate-200 rounded-full h-4 mt-2">
                         <div
                             className={`h-4 rounded-full ${quizData.scorePercentage >= 50 ? 'bg-teal-500' : 'bg-red-500'}`}

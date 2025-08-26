@@ -29,6 +29,7 @@ export const connectWebSocket = (onNotification: NotificationCallback) => {
             Authorization: `Bearer ${jwtToken}`,
         },
         onConnect: (frame: IFrame) => {
+            console.log('WebSocket: Connected', frame);
             notificationSubscription = stompClient!.subscribe(
                 '/user/queue/notification',
                 (message) => {
@@ -38,9 +39,12 @@ export const connectWebSocket = (onNotification: NotificationCallback) => {
             );
         },
         onStompError: (frame: IFrame) => {
+            console.error('WebSocket: Stomp error', frame);
 
         },
         onWebSocketError: (event: Event) => {
+            console.error('WebSocket: Stomp error', event);
+
 
         }
     });

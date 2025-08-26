@@ -18,9 +18,10 @@ const QuizPage = () => {
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ['quizDetails', quizId] });
     }, [quizId, queryClient]);
-    const handleQuizFinished = () => {
-        queryClient.invalidateQueries({ queryKey: ['quizDetails', quizId] });
-    };
+
+  //  const handleQuizFinished = () => {
+    //    queryClient.invalidateQueries({queryKey: ['quizDetails', quizId]});
+    // };
 
     if (isLoading) {
         return (
@@ -43,7 +44,7 @@ const QuizPage = () => {
 
     // This is the core logic: render a different component based on the quiz status
     return (
-        <div className="container mx-auto p-4 md:p-8 max-w-4xl">
+        <div className="container mx-auto p-4 md:p-8 max-w-6xl">
             {quizData.status === 'IN_PROGRESS' && (
                 <QuizPlayer quizData={quizData}  />
             )}

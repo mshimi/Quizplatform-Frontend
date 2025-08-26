@@ -9,6 +9,7 @@ export interface AuthContextType {
     logout: () => void;
     isAuthenticated: boolean;
     isLoading: boolean;
+    authError: string | null;
 }
 
 // This file now exclusively defines and exports the context object and its type.

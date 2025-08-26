@@ -2,18 +2,11 @@
 import {  useState, useEffect, type ReactNode } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as authService from '../service/authService';
-import type { AuthenticationRequest, AuthenticationResponse, RegisterRequest, User } from '../types';
-import { AuthContext } from './authContextObject';
+import type {  AuthenticationResponse } from '../types';
+import {AuthContext, type AuthContextType} from './authContextObject';
 import { useWebSocket } from '../hooks/useWebSocket'; // <-- CORRECTED IMPORT PATH
 
-interface AuthContextType {
-    user: User | null;
-    login: (credentials: AuthenticationRequest) => void;
-    register: (userData: RegisterRequest) => void;
-    logout: () => void;
-    isAuthenticated: boolean;
-    isLoading: boolean; // To check if the initial user fetch is happening
-}
+
 
 // Export the context so it can be used by the useAuth hook in a separate file.
 
@@ -21,6 +14,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const queryClient = useQueryClient();
     const { connect, disconnect } = useWebSocket(); // Get connect/disconnect from WebSocketContext
     const [isAuthAttempted, setIsAuthAttempted] = useState<boolean>(!!localStorage.getItem('accessToken'));
+
+    const [authError, setAuthError] = useState<string | null>(null);
+
 
     // Query to fetch the current user if a token exists
     const { data: user, isLoading, isError } = useQuery({
@@ -52,13 +48,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const loginMutation = useMutation({
         mutationFn: authService.login,
+        onMutate: async () => {
+            if(authError !== null){
+                setAuthError(null);
+            }
+        },
         onSuccess: handleSuccess,
-        // You can add onError handling here to show login errors to the user
-    });
+        onError: (error) => {
+            console.error("Login failed:", error);
+            // You can customize this message
+            setAuthError("E-Mail oder Passwort ist ungültig. Bitte versuchen Sie es erneut.");
+        },    });
 
     const registerMutation = useMutation({
         mutationFn: authService.register,
+        onMutate: async () => {
+            if(authError !== null){
+                setAuthError(null);
+            }
+        },
         onSuccess: handleSuccess,
+        onError: (error) => {
+            console.error("Registration failed:", error);
+            setAuthError("Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.");
+        }
     });
 
     const handleLogout = () => {
@@ -84,6 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // The source of truth for authentication is having a valid user object from the backend.
         isAuthenticated: !isError && !!user,
         isLoading: isLoading,
+        authError: authError,
     };
 
     return (

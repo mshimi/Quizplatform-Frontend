@@ -4,6 +4,7 @@ import StarIcon from "../../common/icons/StarIcon.tsx";
 import type {ModuleListItem} from "../../types";
 import SpinnerIcon from "../../common/icons/SpinnerIcon.tsx";
 import {Link} from "react-router-dom";
+import {useStartQuiz} from "../../hooks/useQuizMutations.ts";
 
 interface ModuleCardProps {
     module: ModuleListItem;
@@ -14,8 +15,10 @@ interface ModuleCardProps {
 
 // --- Die Hauptkomponente ModuleCard ---
 const ModuleCard = ({ module, onToggleFollow, isToggling }: ModuleCardProps) => {
-    // Der Zustand der Karte wird nun direkt von den übergeordneten Props gesteuert.
-    // Das macht die Komponente vorhersehbarer und einfacher mit TanStack Query zu verwalten.
+
+
+    const startQuizMutation = useStartQuiz();
+
     return (
         <div className="bg-white rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out overflow-hidden flex flex-col group">
             {/* Karten-Header */}
@@ -64,9 +67,20 @@ const ModuleCard = ({ module, onToggleFollow, isToggling }: ModuleCardProps) => 
 
                 {/* Aktions-Buttons */}
                 <div className="flex items-center space-x-4">
-                    <button className="flex-1 text-center bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 transition-transform transform hover:scale-105">
-                        Quiz starten
+
+                    <button
+                        onClick={() => startQuizMutation.mutate(module.id)} // 3. Add onClick handler
+                        disabled={startQuizMutation.isPending} // 4. Disable when loading
+                        className="flex-1 text-center bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 transition-transform transform hover:scale-105 disabled:bg-gray-400 disabled:scale-100"
+                    >
+                        {startQuizMutation.isPending ? (
+                            <SpinnerIcon /> // 5. Show spinner
+                        ) : (
+                            'Quiz starten'
+                        )}
                     </button>
+
+
                     <Link
                         to={`/modules/${module.id}`}
                         className="flex-1 text-center bg-white text-indigo-600 font-semibold py-3 px-4 rounded-lg border-2 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 transition-colors"

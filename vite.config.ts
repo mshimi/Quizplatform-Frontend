@@ -16,4 +16,11 @@ export default defineConfig({
   define: {
     global: 'window',
   },
+  build: {
+    // This tells Vite where to put the built files.
+    // The path is relative to the frontend project root.
+    outDir: '../backend/QuizBackend/src/main/resources/static',
+    // This ensures the directory is cleared before each new build.
+    emptyOutDir: true,
+  },
 })

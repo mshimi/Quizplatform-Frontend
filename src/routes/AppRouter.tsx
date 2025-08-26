@@ -15,6 +15,8 @@ import ExploreModulesPage from "../pages/ExploreModulesPage.tsx";
 import ModuleDetailPage from "../pages/ModuleDetailPage.tsx";
 import ComponentDiagramm from "../pages/ComponenetDiagram.tsx";
 import QuizPage from "../pages/QuizPage.tsx";
+import ProfilePage from "../pages/ProfilePage.tsx";
+import StatisticsPage from "../pages/StatisticsPage.tsx";
 // Context
 
 const AppRouter = () => {
@@ -48,7 +50,9 @@ const AppRouter = () => {
                             <Route path="/explore-modules" element={<ExploreModulesPage/>}/>
                             <Route path="/modules/:moduleId" element={<ModuleDetailPage />} />
                             <Route path="/quizzes/:quizId" element={<QuizPage />} />
-                            {/* Fügen Sie hier weitere geschützte Routen hinzu */}
+                            <Route path="/profile" element={<ProfilePage />} />
+                            <Route path="/statistics" element={<StatisticsPage />} />
+
                         </Route>
                     </Route>
                     {/* == NOT FOUND == */}
