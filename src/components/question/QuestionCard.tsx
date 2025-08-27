@@ -15,9 +15,10 @@ interface QuestionCardProps {
     question: ChoiceQuestion;
     index: number;
     onOpenChangeRequestModal: (questionId: string) => void;
+    moduleId:string
 }
 
-const QuestionCard = ({ question, index, onOpenChangeRequestModal }: QuestionCardProps) => {
+const QuestionCard = ({ question, index, onOpenChangeRequestModal,moduleId }: QuestionCardProps) => {
 
     const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -102,6 +103,7 @@ const QuestionCard = ({ question, index, onOpenChangeRequestModal }: QuestionCar
                 isOpen={isReportModalOpen}
                 onClose={() => setIsReportModalOpen(false)}
                 question={question}
+                moduleId={moduleId}
             />
 
         </div>

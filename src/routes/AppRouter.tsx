@@ -18,6 +18,9 @@ import QuizPage from "../pages/QuizPage.tsx";
 import ProfilePage from "../pages/ProfilePage.tsx";
 import StatisticsPage from "../pages/StatisticsPage.tsx";
 import ChangeRequestsPage from "../pages/ChangeRequestsPage.tsx";
+import QuizLobbyPage from "../pages/QuizLobbyPage.tsx";
+import QuizLobbiesPage from "../pages/QuizLobbiesPage.tsx";
+import CreateLobbyPage from "../pages/CreateLobbyPage.tsx";
 // Context
 
 const AppRouter = () => {
@@ -51,6 +54,9 @@ const AppRouter = () => {
                             <Route path="/explore-modules" element={<ExploreModulesPage/>}/>
                             <Route path="/modules/:moduleId" element={<ModuleDetailPage />} />
                             <Route path="/quizzes/:quizId" element={<QuizPage />} />
+                            <Route path="/quizzes" element={<QuizLobbiesPage />} />
+                            <Route path="/lobbies/create" element={<CreateLobbyPage />} /> {/* --- ADD THIS --- */}
+                            <Route path="/lobbies/:lobbyId" element={<QuizLobbyPage />} />
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route path="/statistics" element={<StatisticsPage />} />
                             <Route path="/change-requests" element={<ChangeRequestsPage />} /> {/* Add this new route */}

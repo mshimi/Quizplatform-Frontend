@@ -1,7 +1,6 @@
 import type { QuestionChangeRequest } from '../../types';
 import { useVoteForChangeRequest } from '../../hooks/useQuestionChangeQueries';
 import SpinnerIcon from '../../common/icons/SpinnerIcon';
-import QuestionCard from "./QuestionCard.tsx";
 //import QuestionCard from './QuestionCard'; // Reusing for duplicate view
 
 // --- Icon Components ---
@@ -20,7 +19,9 @@ const ChangeRequestCardDetails = ({ request }: ChangeRequestCardDetailsProps) =>
         voteMutation.mutate({ changeRequestId: request.id, voteDto: { voteType } });
     };
 
-    const hasVoted = request.currentUserHasVoted || voteMutation.isSuccess;
+    const hasVoted =
+        request.currentUserHasVoted ||
+        (voteMutation.isSuccess && voteMutation.variables?.changeRequestId === request.id);
 
     const renderRequestDetails = () => {
         switch (request.requestType) {
@@ -40,22 +41,32 @@ const ChangeRequestCardDetails = ({ request }: ChangeRequestCardDetailsProps) =>
             );
             case 'INCORRECT_ANSWER':
                 return (
-                    <div className="space-y-3">
-                    <h3 className="font-bold text-gray-700">Vorgeschlagene Antwortänderung:</h3>
-            <div>
-            <p className="text-xs font-semibold text-red-700">Bisherige Antwort:</p>
-            <p className={`text-sm p-3 border rounded-md ${request.oldAnswerIsCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-        "{request.oldAnswerText}" (Korrekt: {request.oldAnswerIsCorrect ? 'Ja' : 'Nein'})
-        </p>
-        </div>
-        <div>
-        <p className="text-xs font-semibold text-green-700">Neuer Vorschlag:</p>
-        <p className={`text-sm p-3 border rounded-md ${request.proposedIsCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-        "{request.proposedText}" (Korrekt: {request.proposedIsCorrect ? 'Ja' : 'Nein'})
-        </p>
-        </div>
-        </div>
-    );
+                    <>
+                    <div className="space-y-4">
+                        <h3 className="font-bold text-gray-700">Vorgeschlagene Antwortänderung:</h3>
+                        <div>
+                            <p className="text-xs font-semibold text-red-700">Bisherige Antworten:</p>
+                            <div className="space-y-2 mt-1">
+                                {request.question.answers.map(answer => (
+                                    <p key={answer.id} className={`text-sm p-3 border rounded-md ${answer.isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                                        "{answer.text}" (Korrekt: {answer.isCorrect ? 'Ja' : 'Nein'})
+                                    </p>
+                                ))}
+                            </div>
+                        </div>
+                        <div>
+                            <p className="text-xs font-semibold text-green-700">Neuer Vorschlag:</p>
+                            <div className="space-y-2 mt-1">
+                                {request.proposedAnswers.map(answer => (
+                                    <p key={answer.id} className={`text-sm p-3 border rounded-md ${answer.isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                                        "{answer.text}" (Korrekt: {answer.isCorrect ? 'Ja' : 'Nein'})
+                                    </p>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    </>
+                );
     case 'DUPLICATE_QUESTION':
         return (
             <div className="space-y-4">
@@ -63,7 +74,7 @@ const ChangeRequestCardDetails = ({ request }: ChangeRequestCardDetailsProps) =>
         <p className="text-sm text-gray-600">Diese Frage soll ein Duplikat der folgenden Frage sein:</p>
         {request.duplicateOfQuestion ? (
             <div className="transform scale-95 origin-top-left">
-                <QuestionCard question={request.duplicateOfQuestion} index={0} onOpenChangeRequestModal={() => {}} />
+                <p className="text-sm text-gray-600 p-3 bg-red-50 border border-red-200 rounded-md">{request.duplicateOfQuestion.questionText}</p>
         </div>
         ) : (
             <p className="text-sm text-gray-500">Originalfrage konnte nicht geladen werden.</p>

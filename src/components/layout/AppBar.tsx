@@ -11,7 +11,7 @@ const navLinks = [
     { to: "/", text: "Dashboard", icon: <DashboardIcon /> },
 
     { to: "/explore-modules", text: "Explore Modules", icon: <CollectionIcon /> },
-    { to: "/quizes", text: "Quizes", icon: <PlayIcon /> },
+    { to: "/quizzes", text: "Quizzes", icon: <PlayIcon /> }, // This link now goes to the lobby page
     { to: "/statistics", text: "Statistik", icon: <ChartBarIcon /> },
     { to: "/change-requests", text: "Vorschläge", icon: <LightBulbIcon /> }, // New Link
 

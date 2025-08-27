@@ -13,6 +13,11 @@ export interface ChoiceQuestion {
     changeRequestCounts: ChangeRequestCounts;
 }
 
+export interface QuestionSummary {
+    id: string;
+    questionText: string;
+}
+
 export interface ChangeRequestCounts {
 
     total: number;

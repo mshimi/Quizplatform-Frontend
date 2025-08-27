@@ -12,6 +12,7 @@ import SpinnerIcon from '../common/icons/SpinnerIcon';
 import {useState} from "react";
 import ContributeQuestionButton from "../components/module/ContributeQuestionButton.tsx";
 import {useStartQuiz} from "../hooks/useQuizMutations.ts";
+import {useCreateLobby} from "../hooks/useLobbyQueries.ts";
 
 const ModuleDetailPage = () => {
     const { moduleId } = useParams<{ moduleId: string }>();
@@ -21,6 +22,17 @@ const ModuleDetailPage = () => {
     const toggleFollowMutation = useToggleFollow();
 
     const startQuizMutation = useStartQuiz();
+
+
+
+    const createLobbyMutation = useCreateLobby(); // --- ADD THIS ---
+
+
+    const handleCreateLobby = () => {
+        if (moduleId) {
+            createLobbyMutation.mutate(moduleId);
+        }
+    };
 
     const handleToggleFollow = async () => {
         if (moduleId) {
@@ -114,9 +126,19 @@ const ModuleDetailPage = () => {
                                 </button>
 
                                 {/* Button: Gegen andere spielen */}
-                                <button className="h-12 px-4 flex items-center justify-center gap-2 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 transform hover:-translate-y-0.5 whitespace-nowrap">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 01-9.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                    <span>Gegen andere spielen</span>
+                                <button
+                                    onClick={handleCreateLobby}
+                                    disabled={createLobbyMutation.isPending}
+                                    className="h-12 px-4 flex items-center justify-center gap-2 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 transform hover:-translate-y-0.5 whitespace-nowrap disabled:bg-purple-400"
+                                >
+                                    {createLobbyMutation.isPending ? (
+                                        <SpinnerIcon />
+                                    ) : (
+                                        <>
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 01-9.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                            <span>Gegen andere spielen</span>
+                                        </>
+                                    )}
                                 </button>
                             </div>
 
@@ -133,6 +155,7 @@ const ModuleDetailPage = () => {
                                 <QuestionCard
                                     key={q.id}
                                     question={q}
+                                    moduleId={module.id}
                                     // Calculate the question number based on the current page
                                     index={currentPage * module.questions.size + index}
                                     onOpenChangeRequestModal={function (questionId: string): void {

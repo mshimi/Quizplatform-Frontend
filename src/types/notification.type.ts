@@ -1,3 +1,3 @@
 export interface Notification  {
-    type: "success" | "error"
+    type: "success" | "error" | "LOBBY_UPDATE"
 }

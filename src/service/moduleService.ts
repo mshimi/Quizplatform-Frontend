@@ -1,6 +1,6 @@
 // service/moduleService.ts
 import api from './api';
-import type {ModuleDetail, ModuleListItem, Page} from '../types';
+import type {ModuleDetail, ModuleListItem, ModuleSummary, Page} from '../types';
 
 export interface ModuleQueryParams {
     page?: number;
@@ -65,5 +65,15 @@ export const getModuleDetails = async (moduleId: string, page = 0, size = 10): P
         },
     });
     console.log(data);
+    return data;
+};
+
+
+/**
+ * Fetches a simple list of all modules for dropdowns.
+ * @returns A list of module summaries.
+ */
+export const getAllModulesAsSummary = async (): Promise<ModuleSummary[]> => {
+    const { data } = await api.get('/modules/summary');
     return data;
 };

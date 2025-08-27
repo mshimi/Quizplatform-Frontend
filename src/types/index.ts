@@ -8,3 +8,4 @@ export * from './question.type.ts'
 export * from './notification.type.ts'
 export * from './statistics.types.ts'
 export * from './questionChange.types';
+export * from './lobby.types';

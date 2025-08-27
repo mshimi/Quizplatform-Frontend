@@ -25,13 +25,21 @@ const ChangeRequestsPage = () => {
     // Effect to select the first request in the list when data loads or filter changes
     useEffect(() => {
         if (data?.content && data.content.length > 0) {
-            if (!selectedRequest || !data.content.find(r => r.id === selectedRequest.id)) {
+            // If a request is already selected, find its updated version in the new data list.
+            if (selectedRequest) {
+                const updatedRequest = data.content.find(r => r.id === selectedRequest.id);
+                // If found, update the state. If not (e.g., it moved to another filter tab), select the new first item.
+                setSelectedRequest(updatedRequest || data.content[0]);
+            } else {
+                // If nothing was selected, default to the first item in the new list.
                 setSelectedRequest(data.content[0]);
             }
         } else {
+            // If the new data is empty, clear the selection.
             setSelectedRequest(null);
         }
-    }, [data, selectedRequest]);
+        // This effect should ONLY run when the data from the query changes.
+    }, [data]);
 
     // Handler to change the filter and reset pagination
     const handleFilterChange = (status: ChangeRequestStatus) => {

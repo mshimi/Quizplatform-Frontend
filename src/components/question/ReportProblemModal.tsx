@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import type { ChoiceQuestion, CreateChangeRequest } from '../../types';
+import type { ChoiceQuestion, CreateChangeRequest, QuestionSummary } from '../../types';
 import { useAddChangeRequest } from '../../hooks/useQuestionChangeQueries';
 import SpinnerIcon from '../../common/icons/SpinnerIcon';
+import QuestionSearchDropdown from './QuestionSearchDropdown'; // Import the new component
 
 // Defines the types of reports this modal can handle
 type ReportType = 'SUGGEST_DELETION' | 'DUPLICATE_QUESTION';
@@ -10,12 +11,13 @@ interface ReportProblemModalProps {
     isOpen: boolean;
     onClose: () => void;
     question: ChoiceQuestion;
+    moduleId: string;
 }
 
-const ReportProblemModal = ({ isOpen, onClose, question }: ReportProblemModalProps) => {
+const ReportProblemModal = ({ isOpen, onClose, question, moduleId }: ReportProblemModalProps) => {
     const [subType, setSubType] = useState<ReportType>('SUGGEST_DELETION');
     const [justification, setJustification] = useState('');
-    const [duplicateId, setDuplicateId] = useState('');
+    const [selectedDuplicate, setSelectedDuplicate] = useState<QuestionSummary | null>(null); // State for the selected question
     const [error, setError] = useState<string | null>(null);
 
     const addChangeRequestMutation = useAddChangeRequest();
@@ -25,7 +27,7 @@ const ReportProblemModal = ({ isOpen, onClose, question }: ReportProblemModalPro
         if (isOpen) {
             setSubType('SUGGEST_DELETION');
             setJustification('');
-            setDuplicateId('');
+            setSelectedDuplicate(null);
             setError(null);
         }
     }, [isOpen]);
@@ -47,11 +49,11 @@ const ReportProblemModal = ({ isOpen, onClose, question }: ReportProblemModalPro
         };
 
         if (subType === 'DUPLICATE_QUESTION') {
-            if (!duplicateId.trim()) {
-                setError('Die ID der doppelten Frage ist erforderlich.');
+            if (!selectedDuplicate) {
+                setError('Bitte wählen Sie eine Frage aus der Liste aus.');
                 return;
             }
-            payload.duplicateQuestionId = duplicateId;
+            payload.duplicateQuestionId = selectedDuplicate.id;
         }
 
         addChangeRequestMutation.mutate({ questionId: question.id, requestDto: payload }, {
@@ -80,10 +82,22 @@ const ReportProblemModal = ({ isOpen, onClose, question }: ReportProblemModalPro
 
                     {subType === 'DUPLICATE_QUESTION' && (
                         <div>
-                            <label className="font-bold text-gray-600">ID der doppelten Frage</label>
-                            <input type="text" value={duplicateId} onChange={(e) => setDuplicateId(e.target.value)} placeholder="Fragen-ID hier einfügen" className="w-full p-2 border rounded-md mt-1 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                            <label className="font-bold text-gray-600">Doppelte Frage</label>
+                            {selectedDuplicate ? (
+                                <div className="mt-2 p-3 bg-indigo-100 border border-indigo-300 rounded-md flex justify-between items-center">
+                                    <p className="text-indigo-800">{selectedDuplicate.questionText}</p>
+                                    <button onClick={() => setSelectedDuplicate(null)} className="text-red-500 hover:text-red-700 font-bold text-lg">&times;</button>
+                                </div>
+                            ) : (
+                                <QuestionSearchDropdown
+                                    moduleId={moduleId}
+                                    onQuestionSelect={setSelectedDuplicate}
+                                    questionId={question.id}
+                                />
+                            )}
                         </div>
                     )}
+
 
                     <div className="mt-4">
                         <label className="font-bold text-gray-600">Begründung</label>

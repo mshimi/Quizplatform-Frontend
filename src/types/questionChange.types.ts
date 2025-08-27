@@ -33,14 +33,24 @@ export interface IncorrectQuestionTextRequest extends BaseQuestionChangeRequest 
     proposedText: string;
 }
 
+export interface ProposedAnswer {
+    id: string;
+    text: string;
+    isCorrect: boolean;
+}
+
 // Specific interface for Incorrect Answer requests
 export interface IncorrectAnswerRequest extends BaseQuestionChangeRequest {
     requestType: 'INCORRECT_ANSWER';
-    targetAnswerId?: string;
-    oldAnswerText?: string;
-    oldAnswerIsCorrect?: boolean;
-    proposedText?: string;
-    proposedIsCorrect?: boolean;
+    // Remove old single-change properties
+    // targetAnswerId?: string;
+    // oldAnswerText?: string;
+    // oldAnswerIsCorrect?: boolean;
+    // proposedText?: string;
+    // proposedIsCorrect?: boolean;
+
+    // Add new property for the list of proposed answers
+    proposedAnswers: ProposedAnswer[];
 }
 
 // Specific interface for Deletion requests
