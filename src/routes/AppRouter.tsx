@@ -17,6 +17,7 @@ import ComponentDiagramm from "../pages/ComponenetDiagram.tsx";
 import QuizPage from "../pages/QuizPage.tsx";
 import ProfilePage from "../pages/ProfilePage.tsx";
 import StatisticsPage from "../pages/StatisticsPage.tsx";
+import ChangeRequestsPage from "../pages/ChangeRequestsPage.tsx";
 // Context
 
 const AppRouter = () => {
@@ -52,6 +53,7 @@ const AppRouter = () => {
                             <Route path="/quizzes/:quizId" element={<QuizPage />} />
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route path="/statistics" element={<StatisticsPage />} />
+                            <Route path="/change-requests" element={<ChangeRequestsPage />} /> {/* Add this new route */}
 
                         </Route>
                     </Route>

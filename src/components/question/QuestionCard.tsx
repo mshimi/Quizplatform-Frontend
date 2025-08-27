@@ -1,4 +1,7 @@
 import type { ChoiceQuestion } from '../../types';
+import SuggestChangeModal from "./SuggestChangeModal.tsx";
+import ReportProblemModal from "./ReportProblemModal.tsx";
+import {useState} from "react";
 
 // --- Icon Components ---
 const EditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>;
@@ -15,6 +18,10 @@ interface QuestionCardProps {
 }
 
 const QuestionCard = ({ question, index, onOpenChangeRequestModal }: QuestionCardProps) => {
+
+    const [isSuggestModalOpen, setIsSuggestModalOpen] = useState(false);
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
     const { changeRequestCounts } = question;
     const hasChangeRequests = changeRequestCounts && changeRequestCounts.total > 0;
 
@@ -35,6 +42,9 @@ const QuestionCard = ({ question, index, onOpenChangeRequestModal }: QuestionCar
                         <p className="text-sm font-bold text-indigo-600 mb-1"> Frage {index + 1} - {getQuestionTypeLabel()}</p>
                         <p className="text-lg text-gray-800 font-semibold">{question.questionText}</p>
                     </div>
+                    {!hasChangeRequests && (
+                        <span className="text-xs font-bold uppercase px-2 py-1 rounded-full bg-gray-200 text-gray-800">no request</span>
+                    )}
                     {hasChangeRequests && (
                         <button
                             onClick={() => onOpenChangeRequestModal(question.id)}
@@ -45,13 +55,7 @@ const QuestionCard = ({ question, index, onOpenChangeRequestModal }: QuestionCar
                             <span>{changeRequestCounts.total}</span>
                         </button>
                     )}
-                    {
-                        !hasChangeRequests && (
-                            <p>
-                                no change request
-                            </p>
-                        )
-                    }
+
                 </div>
 
                 {/* Answers List */}
@@ -73,16 +77,33 @@ const QuestionCard = ({ question, index, onOpenChangeRequestModal }: QuestionCar
 
                 {/* Action Buttons Footer */}
                 <div className="pt-4 border-t border-gray-200 flex items-center justify-end gap-4">
-                    <button className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors">
+                    <button
+                        className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors"
+                        onClick={() => setIsSuggestModalOpen(true)}
+                    >
                         <EditIcon />
                         <span>Änderung vorschlagen</span>
                     </button>
-                    <button className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-red-600 transition-colors">
+                    <button
+                        onClick={() => setIsReportModalOpen(true)}
+                        className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-red-600 transition-colors">
                         <FlagIcon />
                         <span>Problem melden</span>
                     </button>
                 </div>
             </div>
+
+            <SuggestChangeModal
+                isOpen={isSuggestModalOpen}
+                onClose={() => setIsSuggestModalOpen(false)}
+                question={question}
+            />
+            <ReportProblemModal
+                isOpen={isReportModalOpen}
+                onClose={() => setIsReportModalOpen(false)}
+                question={question}
+            />
+
         </div>
     );
 };
