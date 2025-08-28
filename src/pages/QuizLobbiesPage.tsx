@@ -44,17 +44,28 @@ const QuizLobbyCard = ({ lobby, onJoin, isJoining }: { lobby: QuizLobby; onJoin:
 const QuizLobbiesPage = () => {
     const { data: lobbies, isLoading, isError } = useWaitingLobbies();
     const joinLobbyMutation = useJoinLobby();
-    const { notifications } = useWebSocket(); // Get notifications from WebSocket
+    //const { notifications } = useWebSocket(); // Get notifications from WebSocket
+    const { subscribe, unsubscribe } = useWebSocket(); // --- Get subscribe/unsubscribe from context ---
+
     const queryClient = useQueryClient();
 
 
     useEffect(() => {
-        // When a lobby update notification is received, invalidate the query to refetch
-        if (notifications.some(n => n.type === 'LOBBY_UPDATE')) {
+        // Define the callback function for when a message is received
+        const handleLobbyUpdate = () => {
+            console.log("Received LOBBY_UPDATE notification. Invalidating lobby query.");
             queryClient.invalidateQueries({ queryKey: ['lobbies', 'waiting'] });
-        }
-    }, [notifications, queryClient]);
+        };
 
+        // Subscribe to the topic when the component mounts
+        subscribe('/topic/lobbies', handleLobbyUpdate);
+
+        // Return a cleanup function to unsubscribe when the component unmounts
+        return () => {
+            unsubscribe('/topic/lobbies');
+        };
+    }, [subscribe, unsubscribe, queryClient]);
+    // --- END FIX ---
 
     const handleJoinLobby = (lobbyId: string) => {
         joinLobbyMutation.mutate(lobbyId);

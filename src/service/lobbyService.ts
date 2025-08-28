@@ -37,3 +37,9 @@ export const getWaitingLobbies = async (): Promise<QuizLobby[]> => {
     const { data } = await api.get<QuizLobby[]>('/lobbies/waiting');
     return data;
 };
+
+
+export const getLobby = async (lobbyId: string): Promise<QuizLobby> => {
+    const { data } = await api.get<QuizLobby>(`/lobbies/${lobbyId}`);
+    return data;
+};

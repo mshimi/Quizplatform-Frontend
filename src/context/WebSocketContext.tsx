@@ -1,5 +1,5 @@
 import { useState, useCallback, type ReactNode} from 'react';
-import { connectWebSocket, disconnectWebSocket } from '../service/websocketService';
+import { connectWebSocket, disconnectWebSocket, subscribeToTopic, unsubscribeFromTopic } from '../service/websocketService';
 import type { Notification } from '../types'; // Create this type
 import { WebSocketContext } from './webSocketContextObject';
 
@@ -22,7 +22,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         setNotifications([]); // Clear notifications on disconnect
     };
 
-    const value = { connect, disconnect, notifications };
+    const value = { connect, disconnect, notifications,subscribe: subscribeToTopic,
+        unsubscribe: unsubscribeFromTopic, };
 
     return (
         <WebSocketContext.Provider value={value}>

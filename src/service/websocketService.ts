@@ -12,6 +12,8 @@ let notificationSubscription: StompSubscription | null = null;
 
 // --- Connection Management ---
 
+const topicSubscriptions = new Map<string, { subscription: StompSubscription; callback: (message: unknown) => void }>();
+
 export const connectWebSocket = (onNotification: NotificationCallback) => {
     const jwtToken = localStorage.getItem('accessToken');
     if (!jwtToken) {
@@ -30,6 +32,7 @@ export const connectWebSocket = (onNotification: NotificationCallback) => {
         },
         onConnect: (frame: IFrame) => {
             console.log('WebSocket: Connected', frame);
+            // Subscribe to user-specific notifications
             notificationSubscription = stompClient!.subscribe(
                 '/user/queue/notification',
                 (message) => {
@@ -37,6 +40,16 @@ export const connectWebSocket = (onNotification: NotificationCallback) => {
                     onNotification(notification);
                 }
             );
+
+            // --- THIS IS NEW ---
+            // Resubscribe to any public topics that were active before a disconnect
+            topicSubscriptions.forEach((value, key) => {
+                value.subscription = stompClient!.subscribe(key, (message) => {
+                    value.callback(JSON.parse(message.body));
+                });
+                console.log(`WebSocket: Resubscribed to topic: ${key}`);
+            });
+            // --- END NEW ---
         },
         onStompError: (frame: IFrame) => {
             console.error('WebSocket: Stomp error', frame);
@@ -57,6 +70,7 @@ export const disconnectWebSocket = () => {
     if (stompClient && stompClient.active) {
         stompClient.deactivate();
     }
+    topicSubscriptions.clear();
     stompClient = null;
     notificationSubscription = null;
 };
@@ -83,4 +97,40 @@ export const sendQuizInvite = (recipientId: string, moduleId: string) => {
         destination: '/app/quiz/invite',
         body: JSON.stringify({ recipientId, moduleId }),
     });
+};
+
+
+/**
+ * Subscribes to a public STOMP topic.
+ * @param topic The topic destination (e.g., '/topic/lobbies').
+ * @param callback The function to call when a message is received on this topic.
+ */
+export const subscribeToTopic = <T>(topic: string, callback: (message: T) => void) => {
+    if (!stompClient?.active) {
+        console.warn(`WebSocket not active. Cannot subscribe to ${topic}. It will be subscribed upon connection.`);
+    }
+
+    if (topicSubscriptions.has(topic)) {
+        console.warn(`Already subscribed to ${topic}.`);
+        return;
+    }
+
+    const subscription = stompClient?.active
+        ? stompClient.subscribe(topic, (message) => {
+            // The message body is parsed and cast to the expected type T.
+            callback(JSON.parse(message.body) as T);
+        })
+        : null;
+
+    topicSubscriptions.set(topic, { subscription: subscription!, callback: callback as (message: unknown) => void });
+    console.log(`WebSocket: Subscribed to topic: ${topic}`);
+};
+
+
+export const unsubscribeFromTopic = (topic: string) => {
+    if (topicSubscriptions.has(topic)) {
+        topicSubscriptions.get(topic)?.subscription?.unsubscribe();
+        topicSubscriptions.delete(topic);
+        console.log(`WebSocket: Unsubscribed from topic: ${topic}`);
+    }
 };
