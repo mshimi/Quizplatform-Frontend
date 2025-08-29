@@ -25,11 +25,11 @@ export type LobbyEventDto = {
     bufferDurationSec?: number;
 };
 
-type Options = {
+//type Options = {
     /** Call this right before we navigate away (suppresses auto-leave). */
-    onBeforeNavigateToLive?: () => void;
-    opts?: { onQuizStarted?: (e: LobbyEventDto) => void }
-};
+  //  onBeforeNavigateToLive?: () => void;
+   // opts?: { onQuizStarted?: (e: LobbyEventDto) => void }
+//};
 
 export function useLobbyEvents(lobbyId?: string, opts?: { onQuizStarted?: (e: LobbyEventDto) => void }) {
     const { subscribe, unsubscribe } = useWebSocket();
