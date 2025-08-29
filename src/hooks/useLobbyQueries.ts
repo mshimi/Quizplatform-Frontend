@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {createLobby, joinLobby, cancelLobby, getWaitingLobbies, getLobby} from '../service/lobbyService';
+import {createLobby, joinLobby, cancelLobby, getWaitingLobbies, getLobby, leaveLobby} from '../service/lobbyService';
 import { useNavigate } from 'react-router-dom';
 
 // Create a query key factory for consistency
@@ -79,3 +79,16 @@ export const useLobby = (id?: string) =>
         enabled: !!id,
         refetchOnMount: 'always',
     });
+
+
+export const useLeaveLobby = () => {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (lobbyId: string) => leaveLobby(lobbyId),
+        onSuccess: (_data, lobbyId) => {
+            // Update lists & detail; the WS event will also refresh, this is just snappy UX
+            qc.invalidateQueries({ queryKey: lobbyKeys.waiting() });
+            qc.removeQueries({ queryKey: lobbyKeys.detail(lobbyId) });
+        },
+    });
+};

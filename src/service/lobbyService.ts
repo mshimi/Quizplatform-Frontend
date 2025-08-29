@@ -1,5 +1,9 @@
 import api from './api';
-import type { QuizLobby } from '../types';
+import type {QuizLobby} from "../types";
+
+
+
+
 
 /**
  * Creates a new quiz lobby for a given module.
@@ -42,4 +46,9 @@ export const getWaitingLobbies = async (): Promise<QuizLobby[]> => {
 export const getLobby = async (lobbyId: string): Promise<QuizLobby> => {
     const { data } = await api.get<QuizLobby>(`/lobbies/${lobbyId}`);
     return data;
+};
+
+/** Leave lobby (current user) — NEW */
+export const leaveLobby = async (lobbyId: string): Promise<void> => {
+    await api.delete(`/lobbies/${lobbyId}/participants/me`);
 };

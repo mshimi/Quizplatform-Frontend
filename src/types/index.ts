@@ -9,3 +9,5 @@ export * from './notification.type.ts'
 export * from './statistics.types.ts'
 export * from './questionChange.types';
 export * from './lobby.types';
+export * from './live_quiz.types.ts'
+export * from './live_events.types.ts'

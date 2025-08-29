@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import type { Notification } from '../types'; // Adjust path if needed
+import type { Notification } from '../types';
 
 export interface WebSocketContextType {
     connect: () => void;
@@ -9,5 +9,4 @@ export interface WebSocketContextType {
     unsubscribe: (topic: string) => void;
 }
 
-// Define and export the context object.
 export const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);

@@ -21,6 +21,7 @@ import ChangeRequestsPage from "../pages/ChangeRequestsPage.tsx";
 import QuizLobbyPage from "../pages/QuizLobbyPage.tsx";
 import QuizLobbiesPage from "../pages/QuizLobbiesPage.tsx";
 import CreateLobbyPage from "../pages/CreateLobbyPage.tsx";
+import LiveSessionPage from "../pages/LiveSessionPage.tsx";
 // Context
 
 const AppRouter = () => {
@@ -52,14 +53,24 @@ const AppRouter = () => {
                         <Route element={<MainLayout/>}>
                             <Route path="/" element={<DashboardPage/>}/>
                             <Route path="/explore-modules" element={<ExploreModulesPage/>}/>
-                            <Route path="/modules/:moduleId" element={<ModuleDetailPage />} />
-                            <Route path="/quizzes/:quizId" element={<QuizPage />} />
-                            <Route path="/quizzes" element={<QuizLobbiesPage />} />
-                            <Route path="/lobbies/create" element={<CreateLobbyPage />} /> {/* --- ADD THIS --- */}
+                            <Route path="/modules/:moduleId" element={<ModuleDetailPage/>}/>
+                            <Route path="/quizzes/:quizId" element={<QuizPage/>}/>
+                            <Route path="/quizzes" element={<QuizLobbiesPage/>}/>
+                            <Route path="/lobbies/create" element={<CreateLobbyPage/>}/> {/* --- ADD THIS --- */}
                             <Route path="/lobbies/:lobbyId" element={<QuizLobbyPage />} />
-                            <Route path="/profile" element={<ProfilePage />} />
-                            <Route path="/statistics" element={<StatisticsPage />} />
-                            <Route path="/change-requests" element={<ChangeRequestsPage />} /> {/* Add this new route */}
+                            <Route path="/lobbies/:lobbyId/live" element={<LiveSessionPage />} />
+                            {/*
+                            <Route path="/lobbies/:lobbyId" element={<QuizLobbyPage />} />
+                           <Route path="/lobbies/:lobbyId/live" element={<QuizLobbyPage />} />
+
+                            <Route path="/lobbies/:lobbyId" element={<div/>}>
+                                <Route index element={<QuizLobbyPage/>}/>
+                                <Route path="live" element={<LiveSessionPage/>}/>
+                            </Route>
+                            */}
+                            <Route path="/profile" element={<ProfilePage/>}/>
+                            <Route path="/statistics" element={<StatisticsPage/>}/>
+                            <Route path="/change-requests" element={<ChangeRequestsPage/>}/> {/* Add this new route */}
 
                         </Route>
                     </Route>
