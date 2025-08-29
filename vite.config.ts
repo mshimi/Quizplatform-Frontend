@@ -10,12 +10,14 @@ export default defineConfig({
     tailwindcss(),],
   server: {
     proxy: {
-      '/api': 'http://localhost:8081'
+     // '/api': 'http://localhost:8081'
+        '/api': 'http://ec2-13-51-207-0.eu-north-1.compute.amazonaws.com:8081'
     }
   },
   define: {
     global: 'window',
   },
+
   build: {
     // This tells Vite where to put the built files.
     // The path is relative to the frontend project root.

@@ -83,8 +83,9 @@ export function connectWebSocket(onNotification: NotificationCallback) {
         return;
     }
 
-    const WS_URL = import.meta.env.VITE_WS_URL ?? 'http://localhost:8081/ws-connect';
+  //  const WS_URL = import.meta.env.VITE_WS_URL ?? 'http://localhost:8081/ws-connect';
 
+    const WS_URL = "http://ec2-13-51-207-0.eu-north-1.compute.amazonaws.com:8081/ws-connect"
     client = new Client({
         webSocketFactory: () => new SockJS(WS_URL),
         connectHeaders: { Authorization: `Bearer ${jwtToken}` },
