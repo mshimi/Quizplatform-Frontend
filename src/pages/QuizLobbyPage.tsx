@@ -4,11 +4,10 @@ import { useLobby, useCancelLobby, useLeaveLobby } from '../hooks/useLobbyQuerie
 import { useAuth } from '../hooks/useAuth';
 import SpinnerIcon from '../common/icons/SpinnerIcon';
 import { useLobbyEvents } from '../hooks/useLobbyEvents';
-import { useAutoLeaveLobby } from '../hooks/useAutoLeaveLobby';
+//import { useAutoLeaveLobby } from '../hooks/useAutoLeaveLobby';
 import LobbyHeader from "../components/lobby/LobbyHeader.tsx";
 import LobbyParticipants from "../components/lobby/LobbyParticipants.tsx";
 import LobbyActions from "../components/lobby/LobbyActions.tsx";
-
 
 const QuizLobbyPage: React.FC = () => {
     const { lobbyId } = useParams<{ lobbyId: string }>();
@@ -19,11 +18,26 @@ const QuizLobbyPage: React.FC = () => {
     const cancelLobbyMutation = useCancelLobby();
     const leaveLobbyMutation = useLeaveLobby();
 
-    // WS events (cache updates / cancel handling)
-    useLobbyEvents(lobbyId);
-
     // auto-leave when participant exits page
-    const { markLeft } = useAutoLeaveLobby(lobby, user || undefined);
+    // NOTE: we need markLeft BEFORE registering lobby events so we can pass it into the hook
+   // const { markLeft } = useAutoLeaveLobby(lobby, user || undefined);
+
+    // WS events (cache updates / cancel handling + navigate to live)
+    useLobbyEvents(lobbyId, {
+      //  onBeforeNavigateToLive: () => {
+            // Suppress the auto-leave beacon when we intentionally switch to the live page
+        //    markLeft();
+        //},
+
+    });
+
+    useLobbyEvents(lobbyId, {
+        onQuizStarted: (e) => {
+          //  markLeft();                           // <-- prevent auto-leave beacon
+            navigate(`/lobbies/${lobbyId}/live?sessionId=${e.sessionId}`, { replace: true });
+        }
+    });
+
 
     // guards
     if (!lobbyId) return <Navigate to="/quizzes" replace />;
@@ -47,7 +61,7 @@ const QuizLobbyPage: React.FC = () => {
         if (!lobbyId) return;
         cancelLobbyMutation.mutate(lobbyId, {
             onSuccess: () => {
-                markLeft(); // suppress auto-leave follow-ups
+            //    markLeft(); // suppress auto-leave follow-ups
                 navigate('/quizzes', { replace: true });
             },
         });
@@ -57,7 +71,7 @@ const QuizLobbyPage: React.FC = () => {
         if (!lobbyId) return;
         leaveLobbyMutation.mutate(lobbyId, {
             onSuccess: () => {
-                markLeft(); // suppress auto-leave follow-ups
+           //     markLeft(); // suppress auto-leave follow-ups
                 navigate('/quizzes', { replace: true });
             },
         });
