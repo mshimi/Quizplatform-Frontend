@@ -22,6 +22,7 @@ import QuizLobbyPage from "../pages/QuizLobbyPage.tsx";
 import QuizLobbiesPage from "../pages/QuizLobbiesPage.tsx";
 import CreateLobbyPage from "../pages/CreateLobbyPage.tsx";
 import LiveSessionPage from "../pages/LiveSessionPage.tsx";
+import ClassDiagrammPage from "../pages/class-diagramm/ClassDiagrammPage.tsx";
 // Context
 
 const AppRouter = () => {
@@ -46,6 +47,7 @@ const AppRouter = () => {
                         <Route path="/login" element={<LoginPage/>}/>
                         <Route path="/register" element={<RegisterPage/>}/>
                         <Route path="/components" element={<ComponentDiagramm/>}/>
+                        <Route path="/classes" element={<ClassDiagrammPage/>}/>
                     </Route>
 
                     {/* Geschützte Routen, die das neue MainLayout verwenden */}

@@ -1,7 +1,7 @@
-import {useState, useMemo} from 'react';
-import type { QuizDetail } from '../../types';
+import {useMemo, useState} from 'react';
+import type {QuizDetail} from '../../types';
 import {useFinishQuiz, useSubmitAnswer} from '../../hooks/useQuizMutations';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
+import {useAutoAnimate} from '@formkit/auto-animate/react';
 
 
 // --- Helper Types ---
@@ -11,13 +11,26 @@ interface QuizPlayerProps {
 }
 
 // --- Icon Components ---
-const CloseIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>;
-const ChevronLeftIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>;
-const ChevronRightIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>;
-const FlagIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75 16.5 12l-.75-5.25m-1.5 5.25L13.5 6l-.75 5.25m-1.5 5.25L10.5 6l-.75 5.25m-1.5 5.25L7.5 6l-.75 5.25M6 6.75h12l-1.5 5.25L12 18l-4.5-6L6 6.75Z" /></svg>;
+const CloseIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                             stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+</svg>;
+const ChevronLeftIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+                                   viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
+</svg>;
+const ChevronRightIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+</svg>;
+const FlagIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round"
+          d="M17.25 6.75 16.5 12l-.75-5.25m-1.5 5.25L13.5 6l-.75 5.25m-1.5 5.25L10.5 6l-.75 5.25m-1.5 5.25L7.5 6l-.75 5.25M6 6.75h12l-1.5 5.25L12 18l-4.5-6L6 6.75Z"/>
+</svg>;
 
 
-const QuizPlayer = ({ quizData }: QuizPlayerProps) => {
+const QuizPlayer = ({quizData}: QuizPlayerProps) => {
 
     const finishQuizMutation = useFinishQuiz();
 
@@ -44,7 +57,7 @@ const QuizPlayer = ({ quizData }: QuizPlayerProps) => {
         const newAnswers = new Map(answers);
         newAnswers.set(currentQuestion.id, answerId);
         setAnswers(newAnswers);
-        submitAnswerMutation.mutate({ quizId: quizData.id, questionId: currentQuestion.id, selectedAnswerId: answerId });
+        submitAnswerMutation.mutate({quizId: quizData.id, questionId: currentQuestion.id, selectedAnswerId: answerId});
     };
 
     const goToQuestion = (index: number) => {
@@ -52,7 +65,6 @@ const QuizPlayer = ({ quizData }: QuizPlayerProps) => {
             setCurrentQuestionIndex(index);
         }
     };
-
 
 
     // --- JSX with new design and animations ---
@@ -65,7 +77,7 @@ const QuizPlayer = ({ quizData }: QuizPlayerProps) => {
                     <p className="text-sm text-slate-500">Frage {currentQuestionIndex + 1} von {quizData.questions.length}</p>
                 </div>
                 <button className="text-slate-400 hover:text-red-500 transition-colors" title="Quiz abbrechen">
-                    <CloseIcon />
+                    <CloseIcon/>
                 </button>
             </div>
 
@@ -112,7 +124,8 @@ const QuizPlayer = ({ quizData }: QuizPlayerProps) => {
                                 : 'bg-white border-slate-300 hover:border-indigo-400'
                             }`}
                         >
-                            <span className={`w-6 h-6 rounded-full border-2 flex-shrink-0 transition-colors duration-200 ${selectedAnswerId === answer.id ? 'bg-indigo-600 border-indigo-600' : 'border-slate-400'}`}></span>
+                            <span
+                                className={`w-6 h-6 rounded-full border-2 flex-shrink-0 transition-colors duration-200 ${selectedAnswerId === answer.id ? 'bg-indigo-600 border-indigo-600' : 'border-slate-400'}`}></span>
                             <span className="text-slate-800">{answer.text}</span>
                         </button>
                     ))}
@@ -120,14 +133,15 @@ const QuizPlayer = ({ quizData }: QuizPlayerProps) => {
             </div>
 
             {/* --- Footer / Navigation --- */}
-            <div className="flex justify-between items-center p-4 bg-slate-100 rounded-b-2xl border-t border-slate-200 flex-shrink-0">
+            <div
+                className="flex justify-between items-center p-4 bg-slate-100 rounded-b-2xl border-t border-slate-200 flex-shrink-0">
                 <button
                     onClick={handleFinishQuiz}
                     disabled={finishQuizMutation.isPending}
 
                     className="flex items-center gap-2 px-6 py-2.5 font-semibold text-white bg-teal-600 rounded-lg shadow-md hover:bg-teal-700 transition-all transform hover:scale-105"
                 >
-                    <FlagIcon />
+                    <FlagIcon/>
                     <span>Quiz abgeben</span>
                 </button>
                 <div className="flex items-center gap-3">
@@ -136,16 +150,18 @@ const QuizPlayer = ({ quizData }: QuizPlayerProps) => {
                         disabled={currentQuestionIndex === 0}
                         className="flex items-center gap-2 px-4 py-2.5 font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg shadow-sm hover:bg-slate-200 disabled:opacity-50 transition"
                     >
-                        <ChevronLeftIcon />
-                        Vorherige
+                        <ChevronLeftIcon/>
+                        <span className="hidden sm:inline">Vorherige</span>
                     </button>
                     <button
                         onClick={() => goToQuestion(currentQuestionIndex + 1)}
                         disabled={currentQuestionIndex === quizData.questions.length - 1}
                         className="flex items-center gap-2 px-4 py-2.5 font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg shadow-sm hover:bg-slate-200 disabled:opacity-50 transition"
                     >
-                        Nächste
-                        <ChevronRightIcon />
+                        <span className="hidden sm:inline">Nächste</span>
+
+
+                        <ChevronRightIcon/>
                     </button>
                 </div>
             </div>
